@@ -1,0 +1,25 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  # "namespace" omitted since ClusterRoles are not namespaced
+  name: deny-tamper_service
+rules:
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: ["get", "watch", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+# This role binding allows "dave" to read secrets in the "development" namespace.
+# You need to already have a ClusterRole named "secret-reader".
+kind: RoleBinding
+metadata:
+  name: deny-tamper-services-bind
+  #
+subjects:
+  - kind: User
+    name: aiman # Name is case sensitive
+    apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: deny-tamper_service
+  apiGroup: rbac.authorization.k8s.io

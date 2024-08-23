@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-app-service
+  labels:
+    app: web-app
+spec:
+  ports:
+    - port: 80
+  clusterIP: None
+  selector:
+    app: web-app
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: web-app
+spec:
+  selector:
+    matchLabels:
+      app: web-app # has to match .spec.template.metadata.labels
+  serviceName: web-app-service
+  replicas: 3 # by default is 1
+  minReadySeconds: 10 # by default is 0
+  template:
+    metadata:
+      labels:
+        app: web-app # has to match .spec.selector.matchLabels
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: nginx
+          image: nginx:1.19
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: web-app-storage
+              mountPath: /usr/share/nginx/html
+  volumeClaimTemplates:
+    - metadata:
+        name: web-app-storage
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: fast
+        resources:
+          requests:
+            storage: 2Gi
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: web-app-storage
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: fast
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 2Gi
