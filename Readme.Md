@@ -1,5 +1,5 @@
 Name: Aiman Aisamuddin bin Ab Ghapar
-
+Please disregard commits after the first commit since it was done after the test time finish
 Q1: Done
 
 Taint your worker node key of key3 and value3 of NoExecute. Create and nginx deployment in qq3 namespace that can tolerate your worker node.
