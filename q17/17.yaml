@@ -1,0 +1,41 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: fast-storage
+  namespace: dynamic-storage
+provisioner: rancher.io/local-path
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: dynamic-pvc
+  namespace: dynamic-storage
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: fast-storage
+
+  ---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: storage-pod
+  namespace: dynamic-storage
+spec:
+  containers:
+    - name: nginx
+      image: nginx:alpine
+      volumeMounts:
+      - mountPath: "/data"
+        name: dynamic
+  volumes:
+    - name: dynamic
+      persistentVolumeClaim:
+        claimName: dynamic-pvc
+
