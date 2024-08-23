@@ -1,4 +1,4 @@
-Name:
+Name: Zahir Zulkifly
 
 Q1:
 
@@ -24,6 +24,7 @@ Q6:
 
 Create a new user use RABC in your Kubenetes cluster. The new user cannot tamper with services in the entire cluster.
 
+//
 Q7:
 
 Create a deployment called busybox with an image of busybox:stable-musl in qq7 namespace. Make a backup use etcd and then delete the busybox deployment. Restore your backup again with the deployment in it.

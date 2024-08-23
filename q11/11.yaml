@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: docker
+  name: docker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: docker
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: docker
+    spec:
+      containers:
+      - image: docker:rc-dind-rootless
+        name: docker
+        resources: {}
+status: {}

@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: multi-container-pod
+  name: multi-container-pod
+spec:
+  containers:
+  - image: nginx:alpine
+    name: web-server     
+    volumeMounts:
+      - name: config-vol
+        mountPath: /usr/share/nginx/html
+    resources: {}
+  - image: busybox
+    name: data-generator
+    volumeMounts:
+      - name: config-vol
+        mountPath: /data                
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
