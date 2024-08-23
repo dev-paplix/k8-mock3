@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  labels:
+    app: mysql
+spec:
+  ports:
+  - port: 3306
+    name: mysql
+  clusterIP: None
+  selector:
+    app: mysql
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql # has to match .spec.template.metadata.labels
+  serviceName: "mysql"
+  replicas: 2 # by default is 1
+  minReadySeconds: 10 # by default is 0
+  template:
+    metadata:
+      labels:
+        app: mysql # has to match .spec.selector.matchLabels
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: mysql
+        image: mysql:latest
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql
+          mountPath: /var/lib/mysql
+        env:
+        - name: mysql_USER
+          valueFrom:
+            secretKeyRef:
+              name: my-secret
+              key: mysql_USER
+        - name: mysql_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: my-secret
+              key: mysql_PASSWORD
+        - name: mysql_DB
+          valueFrom:
+            secretKeyRef:
+              name: my-secret
+              key: mysql_DB
+        - name: mysql_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: my-secret
+              key: mysql_ROOT_PASSWORD
+        - name: mysql_HOST
+          value: mysql
+  volumeClaimTemplates:
+  - metadata:
+      name: mysql
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "qq6"
+      resources:
+        requests:
+          storage: 7Gi
