@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apache-deployment
+  namespace: qq5
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apache
+  template:
+    metadata:
+      labels:
+        app: apache
+    spec:
+      containers:
+      - name: apache
+        image: httpd:latest
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: apache-service
+  namespace: qq5
+spec:
+  selector:
+    app: apache
+  ports:
+  - protocol: TCP
+    port: 443
+    targetPort: 80
+  type: LoadBalancer

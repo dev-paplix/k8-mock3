@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: web-app
+  namespace:
+spec:
+  serviceName: "web-app-service"
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web-app
+  template:
+    metadata:
+      labels:
+        app: web-app
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.19
+        volumeMounts:
+        - name: web-app-storage
+          mountPath: /usr/share/nginx/html
+ volumeClaimTemplates:
+  - metadata:
+      name: web-app-storage
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: "my-storage-class"
+      resources:
+        requests:
+          storage: 2Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-app-service
+  namespace:
+spec:
+  clusterIP: None
+  selector:
+    app: web-app
+  ports:
+  - port: 80
