@@ -1,0 +1,39 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: limited-access
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: limited-user
+  namespace: limited-access
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: limited-role
+rules:
+- apiGroups: [""]
+  resources: ["pods", "services", "configmaps", "secrets"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps"]
+  resources: ["deployments", "replicasets"]
+  verbs: ["get", "list", "watch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: limited-user-binding
+subjects:
+- kind: ServiceAccount
+  name: limited-user
+  namespace: limited-access
+roleRef:
+  kind: ClusterRole
+  name: limited-role
+  apiGroup: rbac.authorization.k8s.io
