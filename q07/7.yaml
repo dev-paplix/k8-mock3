@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: busybox 
+  namespace: qq7
+  labels:
+    app: busybox 
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: busybox 
+  template:
+    metadata:
+      labels:
+        app: busybox 
+    spec:
+      containers:
+      - name: busybox 
+        image: busybox:stable-musl 
+        ports:
+        - containerPort: 80
