@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-qq6
+  namespace: default  # Replace with your desired namespace if not default
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 7Gi
+  storageClassName: qq6
